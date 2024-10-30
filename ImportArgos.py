@@ -64,9 +64,32 @@ while lineString:
         obsDate = lineData[3]
         obsTime = lineData[4]
         obsLC   = lineData[7]
+
+        #Try to convert the coordinates to numbers
+        try:
+
+            # Print results to see how we're doing
+            print (tagID,"Lat:"+obsLat,"Long:"+obsLon, obsLC, obsDate, obsTime)
+
+            # Convert raw coordinate strings to numbers
+            if obsLat[-1] == 'N':
+                obsLat = float(obsLat[:-1])
+            else:
+                obsLat = float(obsLat[:-1]) * -1
+            if obsLon[-1] == 'E':
+                obsLon = float(obsLon[:-1])
+            else:
+                obsLon = float(obsLon[:-1]) * -1
+            
+            # Construct a point object from the feature class
+            obsPoint = arcpy.Point()
+            obsPoint.X = obsLon
+            obsPoint.Y = obsLat
         
-        # Print results to see how we're doing
-        print (tagID,"Lat:"+obsLat,"Long:"+obsLon, obsLC, obsDate, obsTime)
+        #Handle any error
+        except Exception as e:
+            print(f"Error adding record {tagID} to the output: {e}")
+        
         
     # Move to the next line so the while loop progresses
     lineString = inputFileObj.readline()
